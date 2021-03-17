@@ -20,7 +20,7 @@ resource "digitalocean_droplet" "validator" {
 resource "digitalocean_firewall" "web" {
   count = var.enable_firewall ? 1 : 0
 
-  name = var.firewall_name
+  name        = var.firewall_name
   droplet_ids = [digitalocean_droplet.validator.id]
 
   inbound_rule {
