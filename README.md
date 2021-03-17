@@ -16,7 +16,7 @@ More information within the [DigitalOcean Terraform Provider](https://registry.t
 
 ```hcl
 module "validator" {
-  source = "../"
+  source = "github.com/cloudstaking/terraform-digitalocean-polkadot?ref=1.0.0"
 
   chain = "kusama"
 
