@@ -1,6 +1,6 @@
 # terraform-scaleway-polkadot
 
-Terraform module to bootstrap DigitalOcean droplets ready-to-use for Kusama/Polkadot validators. It creates firewall, optional droplet volume and finally ensure the latest snapshot from [Polkashots](https://polkashots.io) is pulled.
+Terraform module to bootstrap ready-to-use _single node_ (or optionally _active-standby_) Kusama/Polkadot validators in DigitalOcean. It creates firewall, optional droplet volume and finally ensure the latest snapshot from [Polkashots](https://polkashots.io) is pulled.
 
 ## Requirements
 
