@@ -24,11 +24,6 @@ variable "droplet_size" {
   description = "Droplet size (type). For Kusama s-4vcpu-8gb is fine"
 }
 
-variable "droplet_image" {
-  default     = "debian-10-x64"
-  description = "Droplet image"
-}
-
 variable "region" {
   description = "Droplet region"
 }

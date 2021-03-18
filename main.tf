@@ -4,7 +4,7 @@ locals {
 }
 
 resource "digitalocean_droplet" "validator" {
-  image    = var.droplet_image
+  image    = "debian-10-x64"
   name     = var.droplet_name
   region   = var.region
   size     = var.droplet_size
