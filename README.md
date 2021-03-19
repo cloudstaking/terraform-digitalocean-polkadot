@@ -74,7 +74,7 @@ No Modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | additional\_volume | By default, s-4vcpu-8gb comes with 150GB disk size. Set this variable in order to create an additional volume (mounted in /srv) | `bool` | `false` | no |
-| additional\_volume\_size | By default, s-4vcpu-8gb comes with 150GB disk size. If you want an additional volume under /srv | `number` | `10` | no |
+| additional\_volume\_size | By default, s-4vcpu-8gb comes with 150GB disk size. If you want an additional volume under /srv | `number` | `200` | no |
 | chain | Chain name: kusama or polkadot. Variable required to download the latest snapshot from polkashots.io | `string` | `"kusama"` | no |
 | droplet\_name | Name of the instance/Droplet | `string` | `"validator"` | no |
 | droplet\_size | Droplet size (type). For Kusama s-4vcpu-8gb should be fine. Check requirements in the Kusama/Polkadot wiki | `string` | `"s-4vcpu-8gb"` | no |

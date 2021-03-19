@@ -66,10 +66,10 @@ resource "digitalocean_firewall" "web" {
 resource "digitalocean_volume" "validator" {
   count = var.additional_volume ? 1 : 0
 
-  region                  = var.region
-  name                    = var.droplet_name
-  size                    = var.additional_volume_size
-  description             = "Extra-volume for Polkadot/Kusama validator"
+  region      = var.region
+  name        = var.droplet_name
+  size        = var.additional_volume_size
+  description = "Extra-volume for Polkadot/Kusama validator"
 }
 
 resource "digitalocean_volume_attachment" "validator" {
