@@ -4,26 +4,37 @@ package_update: true
 package_upgrade: true
 package_reboot_if_required: true
 
+apt:
+  sources:
+    docker.list:
+      source: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+      keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+
 packages:
   - apt-transport-https
-  - ca-certificates
-  - curl
-  - gnupg2
   - software-properties-common
+  - p7zip-full
+  - ntp
+  - docker-ce
+  - docker-ce-cli
+  - docker-compose
+
+ntp:
+  enabled: true
+
+write_files:
+- encoding: b64
+  content: ${docker_compose}
+  owner: root:root
+  path: /root/generate-docker-compose.sh
+  permissions: '755'
+- encoding: b64
+  content: ${nginx_config}
+  owner: root:root
+  path: /root/nginx.conf
+  permissions: '0644'
 
 runcmd:
-  - curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
-  - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
-  - apt-get update -y
-  - apt-get -y install docker-ce docker-ce-cli containerd.io ntp p7zip-full
-  - systemctl start docker
-  - systemctl enable docker
-  - curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-  - chmod +x /usr/local/bin/docker-compose
-  - ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-  - [ sh, -c, 'echo "deb http://deb.debian.org/debian/ unstable main" | tee /etc/apt/sources.list.d/unstable.list' ]
-  - [ sh, -c, '/bin/echo -e "Package: *\nPin: release a=unstable\nPin-Priority: 150\n" | tee /etc/apt/preferences.d/limit-unstable' ]
-  - apt update
 %{ if additional_volume ~}
   - umount /dev/sda
   - mkfs -t ext4 /dev/sda && mount /dev/sda /srv
@@ -33,5 +44,9 @@ runcmd:
   - wget https://${chain.short}-rocksdb.polkashots.io/snapshot -O /srv/${chain.name}.RocksDb.7z
   - cd /srv && 7z x ${chain.name}.RocksDb.7z -o/srv/${chain.name}/chains/ksmcc3
   - rm -rf /srv/${chain.name}.RocksDb.7z
-  - chown 1000:1000 /srv/${chain.name} -R
+%{ else ~}
+  - mkdir /srv/${chain.name} 
 %{ endif ~}
+  - chown 1000:1000 /srv/${chain.name} -R
+  - bash /root/generate-docker-compose.sh digitalocean && rm -rf /root/generate-docker-compose.sh
+  - mv /root/nginx.conf /srv
