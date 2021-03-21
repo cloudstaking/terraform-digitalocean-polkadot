@@ -21,7 +21,7 @@ variable "droplet_name" {
 
 variable "droplet_size" {
   default     = "s-4vcpu-8gb"
-  description = "Droplet size (type). For Kusama s-4vcpu-8gb should be fine. Check requirements in the Kusama/Polkadot wiki"
+  description = "Droplet size (type). For Kusama `s-4vcpu-8gb` should be fine, for Polkadot maybe `m3-8vcpu-64gb`. This constantly change, check requirements section in the Polkadot wiki"
 }
 
 variable "region" {
