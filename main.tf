@@ -5,6 +5,8 @@ locals {
     other    = { name = var.chain, short = var.chain }
   }
 
+  firewall_name = var.firewall_name != "" ? var.firewall_name : "${var.droplet_name}-sg"
+
   docker_compose = templatefile("${path.module}/templates/generate-docker-compose.sh.tpl", {
     chain                   = var.chain
     enable_polkashots       = var.enable_polkashots
@@ -16,9 +18,15 @@ locals {
     chain             = lookup(local.chain, var.chain, local.chain.other)
     enable_polkashots = var.enable_polkashots
     additional_volume = var.additional_volume
-    docker_compose    = var.enable_docker_compose ? base64encode(local.docker_compose) : ""
-    nginx_config      = base64encode(file("${path.module}/templates/nginx.conf.tpl"))
+    docker_compose    = base64encode(local.docker_compose)
   })
+}
+
+resource "digitalocean_ssh_key" "validator" {
+  count = var.ssh_key_id != "" ? 0 : 1
+
+  name       = "${var.droplet_name}-key"
+  public_key = var.ssh_key
 }
 
 resource "digitalocean_droplet" "validator" {
@@ -26,15 +34,13 @@ resource "digitalocean_droplet" "validator" {
   name      = var.droplet_name
   region    = var.region
   size      = var.droplet_size
-  ssh_keys  = var.ssh_keys
-  tags      = var.tags
+  ssh_keys  = [var.ssh_key_id != "" ? var.ssh_key_id : digitalocean_ssh_key.validator.0.id]
   user_data = local.cloud_init
+  tags      = var.tags
 }
 
 resource "digitalocean_firewall" "web" {
-  count = var.enable_firewall ? 1 : 0
-
-  name        = var.firewall_name
+  name        = local.firewall_name
   droplet_ids = [digitalocean_droplet.validator.id]
 
   inbound_rule {
