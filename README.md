@@ -52,6 +52,7 @@ No Modules.
 |------|
 | [digitalocean_droplet](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/droplet) |
 | [digitalocean_firewall](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/firewall) |
+| [digitalocean_ssh_key](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/ssh_key) |
 | [digitalocean_volume](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/volume) |
 | [digitalocean_volume_attachment](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/volume_attachment) |
 | [github_release](https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/release) |
@@ -65,14 +66,13 @@ No Modules.
 | chain | Chain name: kusama or polkadot. Variable required to download the latest snapshot from polkashots.io | `string` | `"kusama"` | no |
 | droplet\_name | Name of the instance/Droplet | `string` | `"validator"` | no |
 | droplet\_size | Droplet size (type). For Kusama `s-4vcpu-8gb` should be fine, for Polkadot maybe `m3-8vcpu-64gb`. This constantly change, check requirements section in the Polkadot wiki | `string` | `"s-4vcpu-8gb"` | no |
-| enable\_docker\_compose | Application layer - create a docker-compose.yml (`/srv/docker-compose.yml`) with the latest polkadot version and nginx as a reverse-proxy | `bool` | `false` | no |
-| enable\_firewall | If true, DigitalOcean firewall is enabled with some default rules | `bool` | `true` | no |
 | enable\_polkashots | Pull latest Polkadot/Kusama (depending on chain variable) from polkashots.io | `bool` | `true` | no |
-| firewall\_name | Firewall name (some cloud providers call this "security group") | `string` | `"validator"` | no |
+| firewall\_name | Firewall name | `string` | `""` | no |
 | firewall\_whitelisted\_ssh\_ip | List of CIDRs the instance is going to accept SSH connections from | `list` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
-| polkadot\_additional\_common\_flags | Application layer - when `enable_docker_compose = true`, the content of this variable will be appended to the polkadot command arguments | `string` | `""` | no |
+| polkadot\_additional\_common\_flags | Application layer, the content of this variable will be appended to the polkadot command arguments | `string` | `""` | no |
 | region | Droplet region | `any` | n/a | yes |
-| ssh\_keys | A list of SSH IDs, use [DigitalOcean API](https://developers.digitalocean.com/documentation/v2/#ssh-keys) to get the IDs. You can also reset the password from the DigitalOcean console. | `list` | `[]` | no |
+| ssh\_key | SSH Key to use for the droplet | `string` | `""` | no |
+| ssh\_key\_id | DigitalOcean doesn't allow duplicate keys. If your SSH public key already exist provide its ID in this variable. Use [DigitalOcean API](https://developers.digitalocean.com/documentation/v2/#ssh-keys) to get the IDs. | `string` | `""` | no |
 | tags | Tags for the instance | `list` | `[]` | no |
 
 ## Outputs

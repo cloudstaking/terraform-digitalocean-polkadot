@@ -1,12 +1,6 @@
-variable "enable_firewall" {
-  description = "If true, DigitalOcean firewall is enabled with some default rules"
-  default     = true
-  type        = bool
-}
-
 variable "firewall_name" {
-  default     = "validator"
-  description = "Firewall name (some cloud providers call this \"security group\")"
+  default     = ""
+  description = "Firewall name"
 }
 
 variable "firewall_whitelisted_ssh_ip" {
@@ -44,9 +38,14 @@ variable "chain" {
   default     = "kusama"
 }
 
-variable "ssh_keys" {
-  default     = []
-  description = "A list of SSH IDs, use [DigitalOcean API](https://developers.digitalocean.com/documentation/v2/#ssh-keys) to get the IDs. You can also reset the password from the DigitalOcean console."
+variable "ssh_key" {
+  description = "SSH Key to use for the droplet"
+  default     = ""
+}
+
+variable "ssh_key_id" {
+  description = "DigitalOcean doesn't allow duplicate keys. If your SSH public key already exist provide its ID in this variable. Use [DigitalOcean API](https://developers.digitalocean.com/documentation/v2/#ssh-keys) to get the IDs."
+  default     = ""
 }
 
 variable "enable_polkashots" {
@@ -60,14 +59,7 @@ variable "tags" {
   description = "Tags for the instance"
 }
 
-variable "enable_docker_compose" {
-  default     = false
-  description = "Application layer - create a docker-compose.yml (`/srv/docker-compose.yml`) with the latest polkadot version and nginx as a reverse-proxy"
-  type        = bool
-}
-
 variable "polkadot_additional_common_flags" {
   default     = ""
-  description = "Application layer - when `enable_docker_compose = true`, the content of this variable will be appended to the polkadot command arguments"
+  description = "Application layer, the content of this variable will be appended to the polkadot command arguments"
 }
-
