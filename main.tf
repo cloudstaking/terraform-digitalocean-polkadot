@@ -80,8 +80,7 @@ resource "digitalocean_volume_attachment" "validator" {
 }
 
 module "cloud_init" {
-  # source = "github.com/cloudstaking/terraform-cloudinit-polkadot?ref=main"
-  source = "/home/mogaal/workspace/github/cloudstaking/terraform-cloudinit-polkadot"
+  source = "github.com/cloudstaking/terraform-cloudinit-polkadot?ref=main"
 
   application_layer                = var.application_layer
   additional_volume                = local.disk_size.additional_volume

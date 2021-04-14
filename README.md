@@ -46,7 +46,7 @@ If `enable_polkashots` is set, it'll take ~10 minutes to download and extract th
 
 | Name | Source | Version |
 |------|--------|---------|
-| cloud_init | /home/mogaal/workspace/github/cloudstaking/terraform-cloudinit-polkadot |  |
+| cloud_init | github.com/cloudstaking/terraform-cloudinit-polkadot?ref=main |  |
 
 ## Resources
 
