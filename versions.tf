@@ -3,8 +3,5 @@ terraform {
     digitalocean = {
       source = "digitalocean/digitalocean"
     }
-    github = {
-      source = "integrations/github"
-    }
   }
 }

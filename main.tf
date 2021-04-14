@@ -1,25 +1,10 @@
 locals {
-  chain = {
-    kusama   = { name = "kusama", short = "ksm" },
-    polkadot = { name = "polkadot", short = "dot" }
-    other    = { name = var.chain, short = var.chain }
-  }
-
   firewall_name = var.firewall_name != "" ? var.firewall_name : "${var.droplet_name}-sg"
 
-  docker_compose = templatefile("${path.module}/templates/generate-docker-compose.sh.tpl", {
-    chain                   = var.chain
-    enable_polkashots       = var.enable_polkashots
-    latest_version          = data.github_release.polkadot.release_tag
-    additional_common_flags = var.polkadot_additional_common_flags
-  })
-
-  cloud_init = templatefile("${path.module}/templates/cloud-init.yaml.tpl", {
-    chain             = lookup(local.chain, var.chain, local.chain.other)
-    enable_polkashots = var.enable_polkashots
-    additional_volume = var.additional_volume
-    docker_compose    = base64encode(local.docker_compose)
-  })
+  disk_size = {
+    additional_volume      = var.disk_size >= 40 ? true : false
+    additional_volume_size = var.disk_size
+  }
 }
 
 resource "digitalocean_ssh_key" "validator" {
@@ -35,8 +20,10 @@ resource "digitalocean_droplet" "validator" {
   region    = var.region
   size      = var.droplet_size
   ssh_keys  = [var.ssh_key_id != "" ? var.ssh_key_id : digitalocean_ssh_key.validator.0.id]
-  user_data = local.cloud_init
+  user_data = module.cloud_init.clout_init
   tags      = var.tags
+
+  depends_on = [ digitalocean_volume.validator ]
 }
 
 resource "digitalocean_firewall" "web" {
@@ -46,13 +33,20 @@ resource "digitalocean_firewall" "web" {
   inbound_rule {
     protocol         = "tcp"
     port_range       = "22"
-    source_addresses = var.firewall_whitelisted_ssh_ip
+    source_addresses = ["0.0.0.0/0", "::/0"]
   }
 
   # nginx (reverse-proxy for p2p)
   inbound_rule {
     protocol         = "tcp"
     port_range       = "80"
+    source_addresses = ["0.0.0.0/0", "::/0"]
+  }
+  
+  # node_exporter
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "9100"
     source_addresses = ["0.0.0.0/0", "::/0"]
   }
 
@@ -70,23 +64,34 @@ resource "digitalocean_firewall" "web" {
 }
 
 resource "digitalocean_volume" "validator" {
-  count = var.additional_volume ? 1 : 0
+  count = local.disk_size.additional_volume ? 1 : 0
 
   region      = var.region
   name        = var.droplet_name
-  size        = var.additional_volume_size
+  size        = local.disk_size.additional_volume_size
   description = "Extra-volume for Polkadot/Kusama validator"
 }
 
 resource "digitalocean_volume_attachment" "validator" {
-  count = var.additional_volume ? 1 : 0
+  count = local.disk_size.additional_volume ? 1 : 0
 
   droplet_id = digitalocean_droplet.validator.id
   volume_id  = digitalocean_volume.validator.0.id
 }
 
-data "github_release" "polkadot" {
-  repository  = "polkadot"
-  owner       = "paritytech"
-  retrieve_by = "latest"
+module "cloud_init" {
+  # source = "github.com/cloudstaking/terraform-cloudinit-polkadot?ref=main"
+  source = "/home/mogaal/workspace/github/cloudstaking/terraform-cloudinit-polkadot"
+
+  application_layer                = var.application_layer
+  additional_volume                = local.disk_size.additional_volume
+  cloud_provider                   = "digitalocean"
+  chain                            = var.chain
+  polkadot_additional_common_flags = var.polkadot_additional_common_flags
+  enable_polkashots                = var.enable_polkashots
+  p2p_port                         = var.p2p_port
+  proxy_port                       = var.proxy_port
+  public_fqdn                      = var.public_fqdn
+  http_username                    = var.http_username
+  http_password                    = var.http_password
 }
