@@ -23,7 +23,7 @@ resource "digitalocean_droplet" "validator" {
   user_data = module.cloud_init.clout_init
   tags      = var.tags
 
-  depends_on = [ digitalocean_volume.validator ]
+  depends_on = [digitalocean_volume.validator]
 }
 
 resource "digitalocean_firewall" "web" {
@@ -42,7 +42,7 @@ resource "digitalocean_firewall" "web" {
     port_range       = "80"
     source_addresses = ["0.0.0.0/0", "::/0"]
   }
-  
+
   # node_exporter
   inbound_rule {
     protocol         = "tcp"

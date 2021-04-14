@@ -1,42 +1,42 @@
 variable "firewall_name" {
   default     = ""
   description = "Firewall name"
-  type = string
+  type        = string
 }
 
 variable "droplet_name" {
   default     = "validator"
   description = "Name of the instance/Droplet"
-  type = string
+  type        = string
 }
 
 variable "droplet_size" {
   default     = "s-4vcpu-8gb"
   description = "Droplet size (type). For Kusama `s-4vcpu-8gb` should be fine, for Polkadot maybe `m3-8vcpu-64gb`. This constantly change, check requirements section in the Polkadot wiki"
-  type = string
+  type        = string
 }
 
 variable "region" {
   description = "Droplet region"
-  type = string
+  type        = string
 }
 
 variable "ssh_key" {
   description = "SSH Key to use for the droplet"
   default     = ""
-  type = string
+  type        = string
 }
 
 variable "ssh_key_id" {
   description = "DigitalOcean doesn't allow duplicate keys. If your SSH public key already exist provide its ID in this variable. Use [DigitalOcean API](https://developers.digitalocean.com/documentation/v2/#ssh-keys) to get the IDs."
   default     = ""
-  type = string
+  type        = string
 }
 
 variable "tags" {
   default     = []
   description = "Tags for the instance"
-  type = list
+  type        = list(any)
 }
 
 variable "disk_size" {
