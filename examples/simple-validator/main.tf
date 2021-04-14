@@ -20,7 +20,7 @@ module "validator" {
   droplet_name      = var.droplet_name
   region            = "lon1"
   ssh_key           = var.ssh_key
-  ssh_key_id        = var.ssh_key_id
-  additional_volume = var.additional_volume
-  enable_polkashots = var.enable_polkashots
+  enable_polkashots = true
+
+  polkadot_additional_common_flags = "--name=CLOUDSTAKING-BLUE --telemetry-url 'wss://telemetry.polkadot.io/submit/ 1'"
 }
