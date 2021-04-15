@@ -43,6 +43,18 @@ resource "digitalocean_firewall" "web" {
     source_addresses = ["0.0.0.0/0", "::/0"]
   }
 
+  # https for TLS-ALPN challange only when public_fqdn is given:
+  # https://caddyserver.com/docs/automatic-https#tls-alpn-challenge
+  dynamic "inbound_rule" {
+    for_each = range(var.public_fqdn != "" ? 1 : 0)
+    content {
+      protocol         = "tcp"
+      port_range       = "443"
+      source_addresses = ["0.0.0.0/0", "::/0"]
+    }
+  }
+
+
   # node_exporter
   inbound_rule {
     protocol         = "tcp"
