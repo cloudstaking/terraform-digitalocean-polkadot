@@ -29,7 +29,7 @@ module "validator" {
 
   droplet_name      = "validator"
   region            = "lon1"
-  ssh_keys          = ["123456789"]
+  ssh_key_id        = "123456789"
 }
 ```
 
